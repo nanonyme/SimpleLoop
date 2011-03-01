@@ -1,5 +1,0 @@
-I wasn't able to find a Python event loop that wasn't bound to GUI development patterns or didn't have an insane learning curve to use so I decided to write my own
-
-SimpleLoop is very simple and if you find you're building an application with a main loop, you might probably just as well replace it with this one. SimpleLoop allows you to queue events to be processed and it also allows you to setup a default event to be processed every time the queue is idle. I strongly recommend the default event to just be something that triggers other events though since otherwise bad stuff like infinite loops might happen. Also remember to have an event that will call method quit on event loop sooner or later if you have a default event because otherwise it will never end.
-
-The API is quite likely to go through drastic changes. I'm planning the event loop structure to take advantage of threads so you can get around those icky blocking problems but the design for that isn't quite done yet.
