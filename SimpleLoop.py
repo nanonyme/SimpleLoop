@@ -17,7 +17,7 @@ class EventLoop:
 
     def __init__ (self):
         self._queue = []
-        self._defaultinvocation = None
+        self._running = False
 
     def queueInvocation(self, function, args):
         self._queue.append((function, args))
@@ -25,8 +25,14 @@ class EventLoop:
     def defaultInvocation(self, function, args):
         self._defaultinvocation = (function, args)
 
+    def quit():
+        self._running = False
+
     def run(self):
+        self._running = True
         while True:
+            if not self._running:
+                break
             if len(self._queue) > 0:
                 (function, args) = self._queue.pop()
                 function(self, args)
