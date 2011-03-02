@@ -11,21 +11,33 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from collections import deque
+
+_currentLoop = None
+
+def currentLoop():
+    global _currentLoop
+    if not _currentLoop:
+        _currentLoop = EventLoop()
+    return _currentLoop
 
 
 class EventLoop:
 
     def __init__ (self):
-        self._queue = []
+        self._queue = deque()
         self._running = False
+        self._defaultInvocation = None
+        self._currentLoop = self
+
 
     def queueInvocation(self, function, args):
         self._queue.append((function, args))
 
     def defaultInvocation(self, function, args):
-        self._defaultinvocation = (function, args)
+        self._defaultInvocation = (function, args)
 
-    def quit():
+    def quit(self):
         self._running = False
 
     def run(self):
@@ -34,11 +46,14 @@ class EventLoop:
             if not self._running:
                 break
             if len(self._queue) > 0:
-                (function, args) = self._queue.pop()
+                (function, args) = self._queue.popleft()
                 function(self, args)
-            elif self._defaultinvocation:
-                (function, args) = self._defaultinvocation
+            elif self._defaultInvocation:
+                (function, args) = self._defaultInvocation
                 function(self, args)
             else:
                 break
+
+
+        
             
