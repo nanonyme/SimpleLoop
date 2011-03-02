@@ -24,7 +24,7 @@ class EventLoop:
     def __init__ (self, factory=False):
         self._queue = deque()
         self._running = False
-        self._defaultInvocation = None
+        self._defaultEvent = None
         self._currentLoop = self
         if factory:
             self.factory = EventFactory()
@@ -33,13 +33,13 @@ class EventLoop:
         global _currentLoop
         _currentLoop = self
 
-    def queueInvocation(self, event):
+    def queueEvent(self, event):
         event._loop = self
         self._queue.append(event)
 
-    def defaultInvocation(self, event):
+    def defaultEvent(self, event):
         event._loop = self
-        self._defaultInvocation = event
+        self._defaultEvent = event
 
     def quit(self):
         self._running = False
@@ -58,8 +58,8 @@ class EventLoop:
                     print output
                 if self.factory:
                     self.factory.recycleEvent(event)
-            elif self._defaultInvocation:
-                event = self._defaultInvocation
+            elif self._defaultEvent:
+                event = self._defaultEvent
                 output = event.execute()
                 if output:
                     print output

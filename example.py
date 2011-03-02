@@ -12,12 +12,12 @@ class Example:
         loop2 = currentLoop()
         event = loop2.factory.createEvent(lambda x : x[0].printMessage(x[1]),
                                           (self, "Still in same loop"))
-        loop2.queueInvocation(event)
+        loop2.queueEvent(event)
         event = loop2.factory.createEvent(lambda x : x.quit())
-        loop2.queueInvocation(event)
+        loop2.queueEvent(event)
 
 
 loop = EventLoop(True)
 event = loop.factory.createEvent(lambda x :x[0].printMessage(x[1]), (Example(), "Hello world"))
-loop.queueInvocation(event)
+loop.queueEvent(event)
 loop.run()
