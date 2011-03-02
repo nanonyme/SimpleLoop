@@ -12,30 +12,34 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from collections import deque
-
+from SimpleEvent import EventFactory
 _currentLoop = None
-
+_eventDisposal = []
 def currentLoop():
-    global _currentLoop
-    if not _currentLoop:
-        _currentLoop = EventLoop()
     return _currentLoop
 
 
 class EventLoop:
 
-    def __init__ (self):
+    def __init__ (self, factory=False):
         self._queue = deque()
         self._running = False
         self._defaultInvocation = None
         self._currentLoop = self
+        if factory:
+            self.factory = EventFactory()
+        else:
+            self.factory = None
+        global _currentLoop
+        _currentLoop = self
 
+    def queueInvocation(self, event):
+        event._loop = self
+        self._queue.append(event)
 
-    def queueInvocation(self, function, args):
-        self._queue.append((function, args))
-
-    def defaultInvocation(self, function, args):
-        self._defaultInvocation = (function, args)
+    def defaultInvocation(self, event):
+        event._loop = self
+        self._defaultInvocation = event
 
     def quit(self):
         self._running = False
@@ -46,11 +50,17 @@ class EventLoop:
             if not self._running:
                 break
             if len(self._queue) > 0:
-                (function, args) = self._queue.popleft()
-                function(self, args)
+                event = self._queue.popleft()
+                output = event.execute()
+                if output:
+                    print output
+                if self.factory:
+                    self.factory.recycleEvent(event)
             elif self._defaultInvocation:
-                (function, args) = self._defaultInvocation
-                function(self, args)
+                event = self._defaultInvocation
+                output = event.execute()
+                if output:
+                    print output
             else:
                 break
 
