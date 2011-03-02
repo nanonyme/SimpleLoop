@@ -45,6 +45,8 @@ class EventLoop:
         self._running = False
 
     def run(self):
+        if self._running:
+            return
         self._running = True
         while True:
             if not self._running:

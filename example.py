@@ -10,13 +10,14 @@ class Example:
     def printMessage(self, message):
         print message
         loop2 = currentLoop()
-        args = (self, "Still in the same loop")
-        loop2.queueInvocation(function, args)
-        function2 = lambda loop, args : loop.quit()
-        loop2.queueInvocation(function2, ())
+        event = loop2.factory.createEvent(lambda x : x[0].printMessage(x[1]),
+                                          (self, "Still in same loop"))
+        loop2.queueInvocation(event)
+        event = loop2.factory.createEvent(lambda x : x.quit())
+        loop2.queueInvocation(event)
 
-function = lambda loop, args: args[0].printMessage(args[1])
-args = (Example(), "Hello world")
-loop = currentLoop()
-loop.queueInvocation(function, args)
+
+loop = EventLoop(True)
+event = loop.factory.createEvent(lambda x :x[0].printMessage(x[1]), (Example(), "Hello world"))
+loop.queueInvocation(event)
 loop.run()
