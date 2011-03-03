@@ -32,10 +32,10 @@ class EventFactory:
             event.__recycle__()
             self._recycledObjects.append(event)
         
-    def recycleEvent_pre(self, event):
+    def recycleEvent__pre(self, event):
         assert isinstance(event, Event)
 
-    def recycleEvent_post(self, rval):
+    def recycleEvent__post(self, rval):
         assert rval is None
 
     def createEvent(self, function, args=None):
@@ -46,10 +46,10 @@ class EventFactory:
         else:
             return Event(function, args)
 
-    def createEvent_pre(self, function, args):
+    def createEvent__pre(self, function, args):
         assert isinstance(function, types.LambdaType)
 
-    def createEvent_post(self, rval):
+    def createEvent__post(self, rval):
         assert isinstance(rval, Event)
     
     def setMaxCount(self, size):
@@ -59,7 +59,7 @@ class EventFactory:
     def setMaxCount__pre(self, size):
         assert size >= 0
 
-    def setMaxCount_post(self, rval):
+    def setMaxCount__post(self, rval):
         assert rval is None
 
 class Event:
