@@ -29,5 +29,11 @@ class EventFactoryTests(unittest.TestCase):
         self.assertEqual(success, False,
                          "Should have refused recycling None object")
 
+    def test_recycleInt(self):
+        success = run_test(lambda (x, y): x.recycleEvent(y),
+                           (self.factory, 56))
+        self.assertEqual(success, False,
+                         "Should have refused recycling an integer")
+
 if __name__ == '__main__':
         unittest.main()
